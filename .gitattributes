@@ -1,0 +1,10 @@
+# Keep the add-on sources byte-identical on every platform. The WoW client
+# reads Lua/TOC directly out of the repo when it lives in Interface\AddOns,
+# so the working tree must match what gets packaged.
+* text=auto eol=lf
+
+*.lua   text eol=lf
+*.toc   text eol=lf
+*.py    text eol=lf
+*.yml   text eol=lf
+.pkgmeta text eol=lf

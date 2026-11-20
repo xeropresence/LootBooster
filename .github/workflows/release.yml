@@ -1,0 +1,79 @@
+name: Release
+
+# Every push to master is released: once CI passes, the pushed commit gets the
+# next version tag (1.1.0, 1.1.1, ...). CurseForge builds its own file from that
+# tag through the repository webhook; this workflow publishes the matching
+# GitHub release. No CurseForge project ID or token is set here, so the
+# packager doesn't upload there too.
+#
+# A tag pushed by hand (e.g. 1.2.0 to start a new minor line) is released the
+# same way, and later pushes count on from it.
+on:
+  push:
+    branches: [master]
+    tags: ["*"]
+  # For a tag whose run failed
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to publish
+        required: true
+
+permissions:
+  contents: write
+
+# One release at a time, so two quick pushes never pick the same version
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The pushed commit itself, not whatever master points at by now
+          ref: ${{ inputs.tag || (github.ref_type == 'tag' && github.ref) || github.sha }}
+          # Full history and tags: the next version and the release notes come from them
+          fetch-depth: 0
+
+      # Tags pushed with GITHUB_TOKEN start no workflow runs, but they do reach
+      # the CurseForge webhook, which builds the release from the tag.
+      - name: Tag the pushed commit
+        id: tag
+        if: github.event_name == 'push' && github.ref_type == 'branch'
+        run: |
+          set -euo pipefail
+          existing=$(git tag --points-at HEAD | head -n 1)
+          if [ -n "$existing" ]; then
+            echo "Already tagged $existing; the run for that tag publishes it"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          last=$(git describe --tags --abbrev=0 --match '[0-9]*.[0-9]*.[0-9]*' --exclude '*-*' 2>/dev/null || true)
+          if [ -z "$last" ]; then
+            next=1.1.0
+          else
+            IFS=. read -r major minor patch <<< "$last"
+            next="$major.$minor.$((patch + 1))"
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$next" -m "Release $next"
+          git push origin "refs/tags/$next"
+          echo "Tagged $next"
+
+      # Zip per .pkgmeta (one LootBooster folder, both TOCs), released under the
+      # tag's name with the zip attached; alpha/beta tags become pre-releases.
+      - name: Package and publish
+        if: steps.tag.outputs.skip != 'true'
+        uses: BigWigsMods/packager@v2
+        env:
+          # packager@v2 reads GITHUB_API_TOKEN (or GITHUB_OAUTH); without a token it
+          # skips the GitHub release and still exits successfully
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

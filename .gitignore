@@ -1,0 +1,14 @@
+# Packager output
+/.release/
+/release/
+*.zip
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# WoW leftovers that end up in an add-on folder
+*.bak
+*.orig
