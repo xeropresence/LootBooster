@@ -1,0 +1,8 @@
+## Interface: 16001
+## Title: TIA:|cffffffff Loot Booster
+## Author: Tia Lynn & Cexikitin
+## Notes: Auto Loot Money and Specific Items
+## Version: @project-version@
+## SavedVariables: LootBoosterDB
+
+LootBooster.lua

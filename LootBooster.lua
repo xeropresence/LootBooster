@@ -1,7 +1,11 @@
-
-local MOD_VERSION = "1.0"
-local MOD_REVISION = "003"
-local GAME_VERSION = "1.60.1"
+-- Addon folder name as the client reports it in ADDON_LOADED (lootbooster, LootBooster, ...)
+local ADDON_NAME = ...
+-- The packager writes the release tag into the TOC; a git checkout still has the token and calls itself "dev"
+local MOD_VERSION = C_AddOns.GetAddOnMetadata(ADDON_NAME, "Version")
+if (string.sub(MOD_VERSION, 1, 1) == "@") then
+    MOD_VERSION = "dev"
+end
+local GAME_VERSION = (GetBuildInfo())
 -- sound/character/gnome/gnomevocalfemale/gnomefemalecheer01.ogg (game files play by FileDataID only)
 local DEFAULT_ALERT_SOUND = 540434
 
@@ -63,7 +67,7 @@ end
 
 
 function LBooster.ADDON_LOADED(self, event, arg1)
-    if (arg1 ~= "lootbooster") then return end
+    if (arg1 ~= ADDON_NAME) then return end
 	
     LootBoosterDB = LootBoosterDB or {}
     LootBoosterDB.Items = LootBoosterDB.Items or {}
@@ -90,7 +94,7 @@ function LBooster.ADDON_LOADED(self, event, arg1)
     -- Bindings are loaded after addons; UPDATE_BINDINGS fires once they are in place
     LBooster:RegisterEvent("UPDATE_BINDINGS")
     
-    DEFAULT_CHAT_FRAME:AddMessage("|cffff77aaTia|cffffffff:|cff0088ff LootBooster |cff808080: |cffffff00g|cffffffff"..GAME_VERSION.." |cffffff00v|cffffffff"..MOD_VERSION.." |cffffff00r|cffffffff"..MOD_REVISION.." |cff808080: |cff00ff00/lootbooster|r")
+    DEFAULT_CHAT_FRAME:AddMessage("|cffff77aaTia|cffffffff:|cff0088ff LootBooster |cff808080: |cffffff00g|cffffffff"..GAME_VERSION.." |cffffff00v|cffffffff"..MOD_VERSION.." |cff808080: |cff00ff00/lootbooster|r")
 end
 
 
