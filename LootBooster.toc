@@ -1,0 +1,11 @@
+## Interface: 16001
+## Title: TIA:|cffffffff Loot Booster
+## Author: Tia Lynn & Cexikitin
+## Notes: Auto Loot Money and Specific Items
+## SavedVariables: LootBoosterDB
+## X-Curse-Packaged-Version: r20160419063409
+## X-Curse-Project-Name: LootBooster
+## X-Curse-Project-ID: lootbooster
+## X-Curse-Repository-ID: wow/lootbooster/mainline
+
+LootBooster.lua
