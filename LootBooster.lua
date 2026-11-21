@@ -115,6 +115,9 @@ end
 
 -- Blizzard's Auto Loot Key defaults to Shift, which autoloots everything while Shift is held.
 -- Shift is LootBooster's skip key, so clear it. Ctrl/Alt picked by the user are left alone.
+-- Only the live setting changes, every time a binding set loads; nothing is saved. Saving from
+-- UPDATE_BINDINGS persists whatever set is loaded at that moment (defaults during a set switch,
+-- or a not-yet-loaded set at login) over the player's bindings.
 function LBooster.UPDATE_BINDINGS()
     if (GetModifiedClick("AUTOLOOTTOGGLE") ~= "SHIFT") then return end
     if (InCombatLockdown()) then
@@ -122,8 +125,6 @@ function LBooster.UPDATE_BINDINGS()
         return
     end
     SetModifiedClick("AUTOLOOTTOGGLE", "NONE")
-    SaveBindings(GetCurrentBindingSet())
-    print("Cleared Blizzard Auto Loot Key (was Shift)")
 end
 
 function LBooster.PLAYER_REGEN_ENABLED()

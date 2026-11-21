@@ -20,8 +20,8 @@ globals = {
 -- 1.60.1 UI sources. A call missing from here is a porting bug.
 read_globals = {
 	"C_AddOns", "C_CurrencyInfo", "C_Item", "ChatTypeInfo", "ColorManager", "ConfirmLootSlot", "CreateFrame",
-	"DEFAULT_CHAT_FRAME", "Enum", "GetBuildInfo", "GetCurrentBindingSet", "GetLootSlotInfo", "GetLootSlotLink",
+	"DEFAULT_CHAT_FRAME", "Enum", "GetBuildInfo", "GetLootSlotInfo", "GetLootSlotLink",
 	"GetModifiedClick", "GetNumLootItems", "InCombatLockdown", "IsShiftKeyDown", "LootSlot", "PlaySoundFile",
-	"RaidWarningUtil", "SaveBindings", "SetModifiedClick",
+	"RaidWarningUtil", "SetModifiedClick",
 	string = { fields = { "trim" } },
 }
